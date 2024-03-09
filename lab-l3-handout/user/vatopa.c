@@ -10,14 +10,16 @@ int main(int argc, char *argv[])
     exit(1);
   }
   if (argc == 3){
-    va2pa(atoi(argv[1]), atoi(argv[2]));
+    int addr = va2pa(atoi(argv[1]), atoi(argv[2]));
+    printf("0x%x\n", addr);
   }
   if (argc == 2) {
-    printf("va from main: %s", atoi(argv[1]));
-    va2pa(atoi(argv[1]), getpid());
+    int addr = va2pa(atoi(argv[1]), getpid());
+    printf("0x%x\n", addr);
   }
   if (argc == 1) {
-    va2pa(0, getpid());
+    int addr = va2pa(0, getpid());
+    printf("0x%x\n", addr);
   }
     exit(0);
 }
