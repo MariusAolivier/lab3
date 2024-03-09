@@ -842,40 +842,20 @@ uint64
 va2pa(uint64 va, int pid)
 {
   struct proc *p;
-  pte_t *pte;
-  uint64 pa;
 
-  if (pid == 0) {
-    // Find the process with the given PID.
-    p = myproc();
-  } else {
-  // Find the process with the given PID.
-  for (p = proc; p < &proc[NPROC]; p++) {
-    if (p->pid == pid) {
-      break;
+if (pid == 0) {
+  p = myproc();
+}
+else {
+for (p=proc; p < &proc[NPROC]; p++){
+        if(p->pid == pid)
+            break;
     }
-  }
-  }
-  if (p == &proc[NPROC]) {
-    // Process not found.
-    printf("No process found");
-    return 0;
-  }
 
-  // Translate the virtual address to a physical address.
-  pte = walk(p->pagetable, va, 0);
-  if (pte == 0) {
-    // No such virtual address.
-    return 0;
-  }
-  if ((*pte & PTE_V) == 0) {
-    // No such virtual address.
-    printf("No such virtual address");
-    return 0;
-  }
-  pa = PTE2PA(*pte);
-
-  char *print_pa = itos(pa);
-  printf("pa = %s\n", print_pa);
-  return pa;
+    if ( p >= &proc[NPROC] || p->state == UNUSED){
+        return 0;
+    }
+}
+  
+    return walkaddr(p->pagetable, va);
 }

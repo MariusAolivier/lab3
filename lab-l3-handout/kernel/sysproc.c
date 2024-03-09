@@ -120,10 +120,10 @@ uint64 sys_schedset(void)
 uint64 sys_va2pa(void)
 {
     int pid;
-    uint64 va;
+    int va;
 
     
-    argaddr(0, &va);
+    argint(0, &va);
     
     
     argint(1, &pid);
