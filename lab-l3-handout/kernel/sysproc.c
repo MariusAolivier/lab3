@@ -119,8 +119,16 @@ uint64 sys_schedset(void)
 
 uint64 sys_va2pa(void)
 {
-    printf("TODO: IMPLEMENT ME [%s@%s (line %d)]", __func__, __FILE__, __LINE__);
-    return 0;
+    int pid;
+    uint64 va;
+
+    // argint gets the nth 32-bit system call argument
+    argint(0, &pid);
+    
+    // argaddr gets the nth system call argument as an address
+    argaddr(1, &va);
+
+    return va2pa(va, pid);
 }
 
 uint64 sys_pfreepages(void)
