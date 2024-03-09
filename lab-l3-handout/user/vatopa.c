@@ -4,26 +4,20 @@
 
 int main(int argc, char *argv[])
 {
-  uint64 result;
 
-  printf("argv[1]: %s\n", argv[1]); // print argv[1]
-    printf("argv[2]: %s\n", argv[2]); //
-    
   if (argc > 3) {
     printf("Usage: vatopa [virtual address] [pid]\n");
     exit(1);
   }
   if (argc == 3){
-    result = va2pa((uint64)&argv[0], (uint64)&argv[1]);
-    printf("%d\n", result);
+    va2pa(atoi(argv[1]), atoi(argv[2]));
   }
   if (argc == 2) {
-    result = va2pa((uint64)&argv[0], getpid());
-    printf("%d\n", result);
+    printf("va from main: %s", atoi(argv[1]));
+    va2pa(atoi(argv[1]), getpid());
   }
   if (argc == 1) {
-    result = va2pa(0, getpid());
-    printf("%d\n", result);
+    va2pa(0, getpid());
   }
     exit(0);
 }

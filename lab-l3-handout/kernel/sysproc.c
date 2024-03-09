@@ -122,11 +122,13 @@ uint64 sys_va2pa(void)
     int pid;
     uint64 va;
 
-    // argint gets the nth 32-bit system call argument
-    argint(0, &pid);
     
-    // argaddr gets the nth system call argument as an address
-    argaddr(1, &va);
+    argaddr(0, &va);
+    
+    
+    argint(1, &pid);
+
+   // printf(" fetched from interrupts: va2pa: va = %s, pid = %s\n", va, pid);
 
     return va2pa(va, pid);
 }
@@ -136,3 +138,4 @@ uint64 sys_pfreepages(void)
     printf("%d\n", FREE_PAGES);
     return 0;
 }
+

@@ -845,8 +845,6 @@ va2pa(uint64 va, int pid)
   pte_t *pte;
   uint64 pa;
 
-  printf("va2pa: va = %p, pid = %d\n", va, pid);
-
   if (pid == 0) {
     // Find the process with the given PID.
     p = myproc();
@@ -877,6 +875,7 @@ va2pa(uint64 va, int pid)
   }
   pa = PTE2PA(*pte);
 
+  char *print_pa = itos(pa);
+  printf("pa = %s\n", print_pa);
   return pa;
-  printf("va2pa: pa = %p from proc.c\n", pa);
 }
