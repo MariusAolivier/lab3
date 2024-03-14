@@ -10,12 +10,12 @@ struct sleeplock;
 struct stat;
 struct superblock;
 
-#define assert(cond)                                        \
-    if (!(cond))                                            \
-    {                                                       \
-        printf("%s@%s:%d\n", __FILE__, __func__, __LINE__); \
-        panic("assert failed");                             \
-    }
+#define assert(cond)                                    \
+  if (!(cond))                                          \
+  {                                                     \
+    printf("%s@%s:%d\n", __FILE__, __func__, __LINE__); \
+    panic("assert failed");                             \
+  }
 
 // bio.c
 void binit(void);
@@ -71,6 +71,9 @@ void ramdiskrw(struct buf *);
 void *kalloc(void);
 void kfree(void *);
 void kinit(void);
+uint getRefCount(uint pa);
+void decRefCount(uint pa);
+void incRefCount(uint pa);
 
 // log.c
 void initlog(int, struct superblock *);

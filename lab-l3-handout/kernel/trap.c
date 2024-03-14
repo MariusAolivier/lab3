@@ -36,7 +36,7 @@ trapinithart(void)
 void
 usertrap(void)
 {
-  int which_dev = 0;
+   int which_dev = 0;
 
   if((r_sstatus() & SSTATUS_SPP) != 0)
     panic("usertrap: not from user mode");
@@ -67,7 +67,46 @@ usertrap(void)
     syscall();
   } else if((which_dev = devintr()) != 0){
     // ok
-  } else {
+  } else if (r_scause() == 15) {
+    uint va = r_stval();
+    struct proc *p = myproc();
+    pte_t *pte;
+    uint64 pa;
+    char *mem;
+
+    if (va >= p->sz) {
+      printf("handle_page_fault: Segmentation fault\n");
+      setkilled(p);
+    }
+
+    if ((pte = walk(p->pagetable, va, 0)) == 0) {
+      printf("handle_page_fault: pte == 0\n");
+      setkilled(p);
+    }
+
+    if ((*pte & PTE_COW) == 0 || (*pte & PTE_V) == 0 || (*pte & PTE_U)==0) {
+      printf("handle_page_fault: cow not set\n");
+      setkilled(p);
+    }
+
+    pa = PTE2PA(*pte);
+
+    if ((mem = kalloc()) == 0) {
+      printf("handle_page_fault: kalloc failed\n");
+      setkilled(p);
+    }
+    
+    memmove(mem, (char *)pa, PGSIZE);
+
+    uvmunmap(p->pagetable, PGROUNDDOWN(va), 1, 0);
+    
+    if (mappages(p->pagetable, PGROUNDDOWN(va), PGSIZE, (uint64)mem, PTE_FLAGS(*pte) | PTE_W | PTE_X | PTE_R | PTE_U) != 0) {
+      printf("handle_page_fault: mappages failed\n");
+      kfree(mem);
+      setkilled(p);
+    }
+    decRefCount(pa);
+  }else {
     printf("usertrap(): unexpected scause %p pid=%d\n", r_scause(), p->pid);
     printf("            sepc=%p stval=%p\n", r_sepc(), r_stval());
     setkilled(p);
