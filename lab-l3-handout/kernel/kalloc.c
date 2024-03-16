@@ -104,10 +104,8 @@ void kfree(void *pa)
 {
   if (MAX_PAGES != 0)
     assert(FREE_PAGES < MAX_PAGES);
-
   if (((uint64)pa % PGSIZE) != 0 || (char *)pa < end || (uint64)pa >= PHYSTOP)
     panic("kfree");
-
   // Fill with junk to catch dangling refs.
   decRefCount((uint64)pa);
 }
